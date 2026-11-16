@@ -8,8 +8,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+// do not need to modify create_segment
 int create_segment(void) {
     return shmget(IPC_PRIVATE, sizeof(struct shared_block), 0600 | IPC_CREAT);
+    // when attach needs to be private
+    // IPC Private need to be create and make private
+    // use as private memory so need to generate unique token
 }
 
 void cleanup_segment(int segment_id, struct shared_block *block) {
@@ -27,12 +31,14 @@ static void wait_for_ready(const struct shared_block *block) {
     }
 }
 
-int task_fast_exchange(void) {
+int task_fast_exchange(void) // it will fork and create a child process
+{
     int segment_id;
     pid_t child_pid;
     int status;
     struct shared_block *block;
 
+    // create shared memory
     segment_id = create_segment();
     if (segment_id == -1) {
         perror("shmget");
@@ -148,7 +154,9 @@ int task_capacity_limit(void) {
         return 1;
     }
 
-    if (child_pid == 0) {
+    if (child_pid == 0) 
+    // almost the same as the previous task except this part
+    {
         /* TODO: wait for ready flag. */
         /* TODO: print: child capacity bytes: 15 */
         /* TODO: detach and return 0 on success. */
