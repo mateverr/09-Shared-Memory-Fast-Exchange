@@ -44,19 +44,22 @@ int main(){
     exit(EXIT_FAILURE);
   }
 
-  printf("Memory attached at %X\n", sh_mem);
-  sh_area = (struct shm_st *)sh_mem;  // type casting
+  printf("Memory attached at %p\n", sh_mem);
+  sh_area = (struct shm_st *)sh_mem;  // type casting, we know the exact type of the data
+  // return to attach line 41 and that line points to
   sh_area->written = 0;
 
   while (running) {
     if (sh_area->written) {
       printf("Data written in shared memory : %s\n", sh_area->data);
       sh_area->written = 0;
-      if (strncmp(sh_area->data, "end", 3) == 0)
+      if (strncmp(sh_area->data, "end", 3) == 0) // if end is input, strcmp will return 0
         running = 0;
     }
     sleep(rand() % 4);
   }
+  // third step and fourth step, detach and remove id
+  // after third step, the shared memory is still attached, need to remove id to destroy
   if (shmdt(sh_mem) == -1 || shmctl(shmID, IPC_RMID, 0) == -1) {  // detach and remove ID from ipcs
     fprintf(stderr, "shmdt or shmctl failed\n");
     exit(EXIT_FAILURE);
