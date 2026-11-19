@@ -11,6 +11,7 @@ grade: all
 	./scripts/grade.sh
 
 $(BIN_DIR)/shared_memory_lab: src/shared_memory_lab.c include/shared_memory_lab.h
+	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:

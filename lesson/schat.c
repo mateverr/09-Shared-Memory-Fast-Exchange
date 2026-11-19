@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
             }
 
-            sh_area = (struct shm_st *)SH_MEM;
+            sh_area = (struct shm_st *)SH_MEM; // type casting
 
             do
             {
@@ -87,7 +87,8 @@ int main(int argc, char *argv[])
                     printf("%s", sh_area->data_1);
                     sh_area->written_1 = 0;
                 }
-                usleep(100);
+                usleep(100); // without this the program will not work
+                // give delay to the program to actually allow scheduler to give a chance for anyone else to do or update the status
             } while (strncmp(sh_area->data_1, "end chat", 8));
             break;
         default:
@@ -104,7 +105,7 @@ int main(int argc, char *argv[])
             {
                 while (sh_area->written_0)
                     usleep(200);
-                fgets(sh_area->data_0, BUFSIZ, stdin);
+                fgets(sh_area->data_0, BUFSIZ, stdin); // give delay to get data from the keyboard
                 sh_area->written_0 = 1;
             }
         }

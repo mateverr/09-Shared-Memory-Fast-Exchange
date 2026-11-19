@@ -21,16 +21,20 @@ int main(){
   key_t key;
 
   // Generate a unique key
-  // key = ftok("/tmp", 'P');
-  // if (key == -1) {
-  //     perror("ftok");
-  //     exit(EXIT_FAILURE);
-  // }
+  // need to combine two factor to create a token
+  // actual string and the location eg: /Users/matt-m1/Desktop/SystemProgramming/09-Shared-Memory-Fast-Exchange/lesson
+  // also need permission to access the directory
+  key = ftok("/Users/matt-m1/Desktop/SystemProgramming/09-Shared-Memory-Fast-Exchange/demo/special", 1234);
+  if (key == -1) {
+    perror("ftok");
+    exit(EXIT_FAILURE);
+  }
   
   srand((unsigned int) getpid());  // generate random seed using process ID
   
   // shmID = shmget(key, MEM_SIZE, 0666 | IPC_CREAT);  // get shmID with size and perm or with IPC_CREAT (this line is for ftok)
-  shmID = shmget((key_t) 1234, MEM_SIZE, 0666 | IPC_CREAT);  // get shmID with size and perm or with IPC_CREAT
+  shmID = shmget((key_t) 1234, MEM_SIZE, 0666 | IPC_CREAT);  // get shmID with size and perm or with IPC_CREATE
+  // 1234 is not unique, so need to generate unique token using ftok
 
   if(shmID == -1) fprintf(stderr, "shmget failed\n");
 
